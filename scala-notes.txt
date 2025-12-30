@@ -1,0 +1,93 @@
+- abstract calss VS trait
+- tuple VS case class
+
+- string interpolation can be done with different interpolators like s or f interpolators
+- it is also possible to create custom interpolators like sql interpolator in some database
+libraries
+
+- A sealed trait can be extended only in the same file as its declaration. They are often used to provide an alternative to enums
+
+For ADT making in Sanjagh:
+sealed trait
+case class
+case object
+
+- Scala also allows the definition of patterns independently of case classes, using unapply methods in
+
+- parametricity - Matchable
+- stacking
+
+- numbers with decimal
+
+val r = 2.5e-1   // val r: Double = 0.25
+val s = .0025e2F // val s: Float = 0.25
+BigInt and BigDecimal
+- Where Double and Float are approximate decimal numbers, BigDecimal is used for precise arithmetic, such as when working with currency
+
+The code i <- ints is referred to as a generator. In any generator p <- e, the expression e can generate zero or many bindings to the pattern p.
+
+- Intersection types
+Intersection types can be useful to describe requirements structurally
+We did not have to create a nominal helper trait
+Note that & is commutative: A & B is the same type as B & A
+
+- marker traits
+
+- union
+- tagged union
+
+- least supertype
+
+- Union types are duals of intersection types. And like & with intersection types, | is also commutative: A | B is the same type as B | A
+
+- boxing overhead
+
+- expression evaluation
+- substitution model -> reduce an expression to a value
+- side effect 
+- substitution model is formalized in the lambda-calculus
+- lambda calculus which is invented by Alonzo Church was invented as a foundation for mathematics, but Godel sait that a complete 
+formalization of mathematics is impossible. so the lambda calculus was left as a model for computable mathematics and for computing.
+
+- call-by-value - CBV
+- call-by-name - CBN
+- both strategies reduce to same final result as long as:
+the reduced expressions consist of pure functions
+both evaluations terminate
+
+- call-by-value has the advantage that it evaluates every function arguments only once
+- call-by-name has the advantage that it a function argument is not evaluated if the corresponding parameter is unused in
+the evaluation of the function body
+
+- faster evaluation strategy -> has fewer reduction steps
+- if CBV evaluation of an expression terminate, CBN evaluation of the expression also terminates, but the other direction
+is not true
+def first(x: Int, y: Int) = x
+first(1, loop)
+CBN -> 1
+CBV -> gets stuck in the loop, because the evaluation of a loop again is another loop
+- scala normally uses call-by-value
+- but if the type of a function parameter starts with => it uses call-by-name 
+def constOne(x: Int, y: => Int) = 1
+- definitions which define with def keyword are only evaluated when it is used
+
+- a && b -> conjunction
+- a || b -> disjunction
+
+- short-circuit evaluation
+
+- the def form of definitions -> call-by-name
+- the val form of definitions -> call-by-value
+
+- recursive functions need return type annotation in Scala
+- return type annotation of non-recursive functions are optional in Scala
+
+- if there are more than one statements on a line, they need to be separated by semicolon
+
+- formal parameters
+- actual parameters (arguments)
+
+- modulo operator
+
+- if a function is tail-recursive, the functions's stack frame can be reused
+- tail-recursive functions are iterative procecess

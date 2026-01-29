@@ -78,14 +78,14 @@ object RecFun extends RecFunInterface:
   /** Exercise 3
     */
   def countChange(money: Int, coins: List[Int]): Int =
-    def aux(m: Int, cs: List[Int], acc: Int): Int =
-      if cs.isEmpty || acc >= m then
-        if acc == m then return 1
+    def aux(money: Int, coins: List[Int], acc: Int): Int =
+      if coins.isEmpty || acc >= money then
+        if acc == money then return 1
         else return 0
 
-      val l = aux(m, cs, acc + cs.head)
+      val l = aux(money, coins, acc + coins.head)
 
-      val r = aux(m, cs.tail, acc - cs.head)
+      val r = aux(money, coins.tail, acc - coins.head)
 
       l + r
 

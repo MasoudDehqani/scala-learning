@@ -13,8 +13,9 @@ def time[A](label: String)(f: => A): A = {
 object RecFun extends RecFunInterface:
 
   def main(args: Array[String]): Unit =
-    println("")
-    println(balance("())(".toList))
+    println(countChange(4, List(1, 2)))
+    // println("")
+    // println(balance("())(".toList))
     // println("Pascal's Triangle")
     // for row <- 0 to 10 do
     //   for col <- 0 to row do
@@ -32,10 +33,10 @@ object RecFun extends RecFunInterface:
 
   /** Exercise 1
     */
-  def pascal(c: Int, r: Int): Int =
-    if r < 2 || (c < 1 || c >= r)
-    then 1
-    else pascal(c, r - 1) + pascal(c - 1, r - 1)
+  // def pascal(c: Int, r: Int): Int =
+  //   if r < 2 || (c < 1 || c >= r)
+  //   then 1
+  //   else pascal(c, r - 1) + pascal(c - 1, r - 1)
 
   // def pascalMemo(c: Int, r: Int): Int =
   //   val memo = collection.mutable.Map[String, Int]()
@@ -51,29 +52,41 @@ object RecFun extends RecFunInterface:
 
   //   aux(c, r)
 
-  def pascalMemo(c: Int, r: Int): Int =
-    val memo = collection.mutable.Map[(Int, Int), Int]()
+  // def pascalMemo(c: Int, r: Int): Int =
+  //   val memo = collection.mutable.Map[(Int, Int), Int]()
 
-    def aux(column: Int, row: Int): Int =
-      memo.getOrElseUpdate(
-        (column, row),
-        if row < 2 || column < 1 || column >= row then 1
-        else aux(column, row - 1) + aux(column - 1, row - 1)
-      )
+  //   def aux(column: Int, row: Int): Int =
+  //     memo.getOrElseUpdate(
+  //       (column, row),
+  //       if row < 2 || column < 1 || column >= row then 1
+  //       else aux(column, row - 1) + aux(column - 1, row - 1)
+  //     )
 
-      aux(c, r)
+  //     aux(c, r)
 
   /** Exercise 2
     */
-  def balance(chars: List[Char]): Boolean =
-    def aux(cs: List[Char], open: Int): Boolean =
-      cs match
-        case Nil      => open == 0
-        case '(' :: t => aux(t, open + 1)
-        case ')' :: t => open > 0 && aux(t, open - 1)
-        case _ :: t   => aux(t, open)
-    aux(chars, 0)
+  // def balance(chars: List[Char]): Boolean =
+  //   def aux(cs: List[Char], open: Int): Boolean =
+  //     cs match
+  //       case Nil      => open == 0
+  //       case '(' :: t => aux(t, open + 1)
+  //       case ')' :: t => open > 0 && aux(t, open - 1)
+  //       case _ :: t   => aux(t, open)
+  //   aux(chars, 0)
 
   /** Exercise 3
     */
-  def countChange(money: Int, coins: List[Int]): Int = ???
+  def countChange(money: Int, coins: List[Int]): Int =
+    def aux(m: Int, cs: List[Int], acc: Int): Int =
+      if cs.isEmpty || acc >= m then
+        if acc == m then return 1
+        else return 0
+
+      val l = aux(m, cs, acc + cs.head)
+
+      val r = aux(m, cs.tail, acc - cs.head)
+
+      l + r
+
+    return aux(money, coins, 0)

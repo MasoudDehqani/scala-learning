@@ -91,3 +91,18 @@ def constOne(x: Int, y: => Int) = 1
 
 - if a function is tail-recursive, the functions's stack frame can be reused
 - tail-recursive functions are iterative procecess
+
+- Generally, function application associates to the left:
+sum(cube)(1, 10) == (sum(cube)) (1, 10)
+- functional types associate to the right:
+Int => Int => Int
+is equivalent to
+Int => (Int => Int)
+
+- In many languages like Java or C# there are in fact patterns like this
+example: a[i][j]
+These are in fact function applications from index to array elements. That is why array indexing
+is like a(i) in Scala. That why in other languages the syntax is with brackets not with
+parantheses has no good reason and it has only historical reasons
+
+

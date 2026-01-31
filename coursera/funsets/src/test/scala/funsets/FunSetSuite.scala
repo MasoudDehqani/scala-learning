@@ -36,6 +36,7 @@ class FunSetSuite extends munit.FunSuite:
     val s1 = singletonSet(1)
     val s2 = singletonSet(2)
     val s3 = singletonSet(3)
+    val s4 = singletonSet(4)
 
   /**
    * This test is currently disabled (by using .ignore) because the method
@@ -45,7 +46,7 @@ class FunSetSuite extends munit.FunSuite:
    * .ignore annotation.
    */
 
-    test("singleton set one contains one".ignore) {
+    test("singleton set one contains one") {
     
     /**
      * We create a new instance of the "TestSets" trait, this gives us access
@@ -67,7 +68,64 @@ class FunSetSuite extends munit.FunSuite:
       assert(!contains(s, 3), "Union 3")
   }
 
+  test("intersection") {
+    new TestSets:
+      val u1 = union(s1, s2)
+      val u2 = union(s2, s3)
 
+      val i1 = intersect(u1, u2)
+
+      assert(contains(i1, 2), "intersection 1")
+      assert(!contains(i1, 3), "intersection 2")
+  }
+
+  test("diff") {
+    new TestSets:
+      val u1 = union(s1, s2)
+      val u2 = union(s2, s3)
+
+      val d = diff(u1, u2)
+
+      assert(contains(d, 1), "diff 1")
+      assert(!contains(d, 2), "diff 3")
+  }
+
+  test("filter") {
+    new TestSets:
+      val u1 = union(s1, s2)
+      val u2 = union(s2, s3)
+      val u3 = union(u1, u2)
+
+      val d = filter(u3, x => x < 3)
+
+      assert(contains(d, 1), "filter 1")
+      assert(contains(d, 2), "filter 2")
+      assert(!contains(d, 3), "filter 3")
+  }
+
+  test("forall") {
+    new TestSets:
+      val u1 = union(s1, s2)
+      val u2 = union(s2, s3)
+      val u3 = union(u1, u2)
+
+      assert(forall(u3, x => x < 4), "forall 1")
+  }
+
+  test("exists") {
+    new TestSets:
+      val u1 = union(s1, s2)
+
+      assert(exists(u1, x => x < 2), "exists 1")
+  }
+
+  test("map") {
+    new TestSets:
+      val u1 = union(s1, s2)
+      val s = map(u1, x => x * 2)
+
+      assert(contains(s, 4), "map")
+  }
 
   import scala.concurrent.duration.*
   override val munitTimeout = 10.seconds

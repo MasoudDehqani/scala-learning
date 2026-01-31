@@ -105,4 +105,9 @@ These are in fact function applications from index to array elements. That is wh
 is like a(i) in Scala. That why in other languages the syntax is with brackets not with
 parantheses has no good reason and it has only historical reasons
 
+- data abstraction
+- defining with val is eager and computed only once
+- defining with def behaves like a method and computed every time it is called
 
+- dynamic binding -> OOP
+- term rewriting

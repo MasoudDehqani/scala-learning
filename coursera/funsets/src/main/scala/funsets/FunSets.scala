@@ -89,6 +89,11 @@ trait FunSets extends FunSetsInterface:
     //     iter(a + 1)
     
     // iter(-bound)
+  
+  type FSet[A] = A => Boolean
+  def forall2[A](s: FSet[A], p: A => Boolean): Boolean = ???
+  def exists2[A](s: FSet[A], p: A => Boolean): Boolean = !forall2(s, x => !p(x))
+  def map2[A,B](s: FSet[A], f: A => B): FSet[B] = x => exists2(s, a => f(a) == x)
 
   /**
    * Displays the contents of a set

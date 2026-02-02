@@ -1,0 +1,10 @@
+- Matchable
+- parametricity
+
+Types:
+Any (top type) -> Matchable ->
+AnyVal -> represents value types -> they are are non-nullable
+AnyRef / java.lang.Object
+Null -> is the subtype of all reference types
+
+Nothing (bottom type)

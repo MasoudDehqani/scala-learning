@@ -1,0 +1,20 @@
+{
+  "name": "scala-cli",
+  "argv": [
+    "/home/sanjaghdev/.local/share/coursier/bin/.scala-cli.aux",
+    "bsp",
+    "--json-options",
+    "/home/sanjaghdev/learning/scala/scala_3_book/types/.scala-build/ide-options-v2.json",
+    "--json-launcher-options",
+    "/home/sanjaghdev/learning/scala/scala_3_book/types/.scala-build/ide-launcher-options.json",
+    "--envs-file",
+    "/home/sanjaghdev/learning/scala/scala_3_book/types/.scala-build/ide-envs.json",
+    "/home/sanjaghdev/learning/scala/scala_3_book/types"
+  ],
+  "version": "1.11.0",
+  "bspVersion": "2.1.1",
+  "languages": [
+    "scala",
+    "java"
+  ]
+}

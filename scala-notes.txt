@@ -111,3 +111,10 @@ parantheses has no good reason and it has only historical reasons
 
 - dynamic binding -> OOP
 - term rewriting
+- dynamic method dispatch
+
+- type erasure at compile time and before evaluation
+- type parameters are compiler only property in languages like Scala, Java, Haskell, ML, OCaml
+
+- Scala has two global namespaces, one for types and one for values
+- Classes live in type namespace and objects live in the term namespace

@@ -40,7 +40,7 @@ abstract class TweetSet extends TweetSetInterface:
    * Question: Can we implement this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def filter(p: Tweet => Boolean): TweetSet = ???
+  def filter(p: Tweet => Boolean): TweetSet = this.filterAcc(p, Empty())
 
   /**
    * This is a helper method for `filter` that propagates the accumulated tweets.
@@ -53,7 +53,7 @@ abstract class TweetSet extends TweetSetInterface:
    * Question: Should we implement this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def union(that: TweetSet): TweetSet = ???
+  def union(that: TweetSet): TweetSet
 
   /**
    * Returns the tweet from this set which has the greatest retweet count.
@@ -64,7 +64,7 @@ abstract class TweetSet extends TweetSetInterface:
    * Question: Should we implement this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def mostRetweeted: Tweet = ???
+  def mostRetweeted: Tweet
 
   /**
    * Returns a list containing all tweets of this set, sorted by retweet count
@@ -75,7 +75,7 @@ abstract class TweetSet extends TweetSetInterface:
    * Question: Should we implement this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def descendingByRetweet: TweetList = ???
+  def descendingByRetweet: TweetList
 
   /**
    * The following methods are already implemented
@@ -104,8 +104,16 @@ abstract class TweetSet extends TweetSetInterface:
    */
   def foreach(f: Tweet => Unit): Unit
 
+  def isEmpty: Boolean
+
 class Empty extends TweetSet:
-  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = ???
+  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = acc
+
+  def isEmpty: Boolean = true
+
+  def mostRetweeted: Tweet = throw java.util.NoSuchElementException("mostRetweeted of EmptyList")
+
+  def descendingByRetweet: TweetList = Nil
 
   /**
    * The following methods are already implemented
@@ -115,14 +123,38 @@ class Empty extends TweetSet:
 
   def incl(tweet: Tweet): TweetSet = NonEmpty(tweet, Empty(), Empty())
 
+  def union(that: TweetSet): TweetSet = that
+
   def remove(tweet: Tweet): TweetSet = this
 
   def foreach(f: Tweet => Unit): Unit = ()
 
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet:
 
-  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = ???
+  def isEmpty: Boolean = false
 
+  def mostRetweeted: Tweet =
+    def max(t1: Tweet, t2: Tweet): Tweet =
+      if (t1.retweets >= t2.retweets) t1 else t2
+
+    val bestLeft = if left.isEmpty then elem else max(elem, left.mostRetweeted)
+    val bestBoth = if right.isEmpty then bestLeft else max(bestLeft, right.mostRetweeted)
+
+    bestBoth
+  
+  def descendingByRetweet: TweetList =
+    Cons(mostRetweeted, this.remove(mostRetweeted).descendingByRetweet)
+
+  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet =
+    if p(elem) then
+      left.filterAcc(p, right.filterAcc(p, acc.incl(elem)))
+    else
+      left.filterAcc(p, right.filterAcc(p, acc))
+      
+  
+  def union(that: TweetSet): TweetSet =
+    left.union(right.union(that.incl(elem)))
+    
 
   /**
    * The following methods are already implemented
@@ -178,14 +210,14 @@ object GoogleVsApple:
   val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
 
-  lazy val googleTweets: TweetSet = ???
-  lazy val appleTweets: TweetSet = ???
+  lazy val googleTweets: TweetSet = allTweets.filter(tweet => google.exists(text => tweet.text.contains(text)))
+  lazy val appleTweets: TweetSet = allTweets.filter(tweet => apple.exists(text => tweet.text.contains(text)))
 
   /**
    * A list of all tweets mentioning a keyword from either apple or google,
    * sorted by the number of retweets.
    */
-  lazy val trending: TweetList = ???
+  lazy val trending: TweetList = googleTweets.union(appleTweets).descendingByRetweet
 
 object Main extends App:
   // Print the trending tweets

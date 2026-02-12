@@ -1,5 +1,7 @@
 package patmat
 
+import scala.annotation.tailrec
+
 /**
  * A huffman code is represented by a binary tree.
  *
@@ -153,15 +155,36 @@ trait Huffman extends HuffmanInterface:
    * the resulting list of characters.
    */
   def decode(tree: CodeTree, bits: List[Bit]): List[Char] =
-    def aux(currentTree: CodeTree, bts: List[Bit]): List[Char] =
-      bts match
-        case head :: next => currentTree match
-          case Fork(left, right, _, _) => if head == 1 then aux(right, next) else aux(left, next)
-          case Leaf(char, _) => List(char) ::: aux(tree, bits)
-        
-        case Nil => List()
+    @tailrec
+    def next(subtree: CodeTree, bits: List[Bit]):(Char, List[Bit]) =
+      subtree match
+        case Leaf(c,_) => (c, bits)
+        case Fork(l,r,_,_) => if bits.head == 0 then next(l, bits.tail) else next(r, bits.tail)
+      
+    next(tree, bits) match
+      case (c, Nil) => List(c)
+      case (c, remainingBits) => c :: decode(tree, remainingBits)
     
-    aux(tree, bits)
+  
+
+  // def decode(tree: CodeTree, bits: List[Bit]): List[Char] = 
+  //   def decodeAcc(subTree: CodeTree, bits: List[Bit], acc: List[Char]) : List[Char] = subTree match 
+  //     case Leaf(char, weight) => if !bits.isEmpty then decodeAcc(tree, bits, acc :+ char) else acc :+ char
+  //     case Fork(left, right, _, _) => if bits.head == 0 then decodeAcc(left, bits.tail, acc) else decodeAcc(right, bits.tail, acc)
+    
+  //   if bits.isEmpty then List() else decodeAcc(tree, bits, List())
+  
+
+  // def decode(tree: CodeTree, bits: List[Bit]): List[Char] =
+  //   def aux(currentTree: CodeTree, bts: List[Bit]): List[Char] =
+  //     bts match
+  //       case head :: next => currentTree match
+  //         case Fork(left, right, _, _) => if head == 1 then aux(right, next) else aux(left, next)
+  //         case Leaf(char, _) => List(char) ::: aux(tree, next)
+        
+  //       case Nil => List()
+    
+  //   aux(tree, bits)
   
 
   /**
@@ -190,14 +213,39 @@ trait Huffman extends HuffmanInterface:
    * into a sequence of bits.
    */
   def encode(tree: CodeTree)(text: List[Char]): List[Bit] =
-    def findPath(t: CodeTree, ch: Char): List[Bit] =
-      t match
-        case Fork(left, right, _, _) => if chars(left).contains(ch) then 0 :: findPath(left, ch) else 1 :: findPath(right, ch)
-        case Leaf(char, _) => List()
+    def traverseSubtree(subtree: CodeTree, c: Char): List[Bit] = 
+      subtree match
+        case Leaf(_, _) => Nil
+        case Fork(left, right, _, _) =>
+          if chars(left).contains(c) then 0 :: traverseSubtree(left, c) else 1 :: traverseSubtree(right, c)
 
-    text match
-      case head :: next => findPath(tree, head) ::: encode(tree)(next)
-      case Nil => List()
+    text.flatMap(traverseSubtree(tree, _))
+  
+
+  // def encode(tree: CodeTree)(text: List[Char]): List[Bit] = 
+  //   def encodeChar(tree: CodeTree, char: Char, acc: List[Bit]) : List[Bit] = tree match 
+  //     case Leaf(c, _) => if c == char then acc else List()
+  //     case Fork(left, right, _, _) => 
+  //       // add suffix 0 to bits
+  //       val res : List[Bit] = encodeChar(left, char, acc :+ 0)
+  //       // add suffix 1 to bits
+  //       if (res.isEmpty) encodeChar(right, char, acc :+ 1)
+  //       else res
+      
+  //   text match 
+  //     case List() => List()
+  //     case char :: tail => encodeChar(tree, char, Nil) ::: encode(tree)(tail)
+  
+
+  // def encode(tree: CodeTree)(text: List[Char]): List[Bit] =
+  //   def findPath(t: CodeTree, ch: Char): List[Bit] =
+  //     t match
+  //       case Fork(left, right, _, _) => if chars(left).contains(ch) then 0 :: findPath(left, ch) else 1 :: findPath(right, ch)
+  //       case Leaf(char, _) => List()
+
+  //   text match
+  //     case head :: next => findPath(tree, head) ::: encode(tree)(next)
+  //     case Nil => List()
 
 
 
